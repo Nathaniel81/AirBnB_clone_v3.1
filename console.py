@@ -118,13 +118,35 @@ class HBNBCommand(cmd.Cmd):
         if not args:
             print("** class name missing **")
             return
-        elif args not in HBNBCommand.classes:
+        argss = args.split(" ")
+        if argss[0] not in HBNBCommand.classes:
             print("** class doesn't exist **")
             return
-        new_instance = HBNBCommand.classes[args]()
-        storage.save()
+        new_instance = HBNBCommand.classes[argss[0]]()
+        k, v = tuple(argss[1].split('='))
+        if v.startswith('"') and v.endswith('"'):
+            v = v[1:-1]
+        print(v)
+#        setattr(new_instance, k, v)
+#        storage.save()
+"""def remove_quotes(my_string):
+    if my_string[0] == '"' and my_string[-1] == '"':
+        my_string = my_string[1:-1]
+            return my_string"""
+
+"""my_string = '"Hello, world"'
+new_string = remove_quotes(my_string)
+print(new_string)
+"""
+
+"""thestr = 'State name="Texas"'
+my_list = thestr.split(" ")
+
+if my_list[1].split('=')[1][0] == '"':
+    new_list = my_list[1].split('=')[1][1:-1]
+    print(new_list)"""
+
         print(new_instance.id)
-        storage.save()
 
     def help_create(self):
         """ Help information for the create method """
