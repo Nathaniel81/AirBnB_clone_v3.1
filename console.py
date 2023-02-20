@@ -112,7 +112,56 @@ class HBNBCommand(cmd.Cmd):
     def emptyline(self):
         """ Overrides the emptyline method of CMD """
         pass
+    def do_create(self, args):
+    """Create an object of any class"""
 
+    # Check if the class name is provided
+    if not args:
+        print("** class name missing **")
+        return
+
+    # Split the arguments and extract the class name
+    argss = args.split()
+    class_name = argss[0]
+
+    # Check if the class exists
+    if class_name not in HBNBCommand.classes:
+        print("** class doesn't exist **")
+        return
+
+    # Create a new instance of the class
+    try:
+        new_instance = HBNBCommand.classes[class_name]()
+    except TypeError:
+        print("** failed to create instance **")
+        return
+
+    # Set the attributes of the new instance
+    for pair in argss[1:]:
+        key, value = pair.split("=", maxsplit=1)
+        value = value.strip()
+        if len(value) >= 2 and value[0] == value[-1] == '"':
+            value = value[1:-1].replace('_', ' ')
+        else:
+            try:
+                value = int(value)
+            except ValueError:
+                try:
+                    value = float(value)
+                except ValueError:
+                    print(f"** invalid value '{value}' **")
+                    return
+
+        try:
+            setattr(new_instance, key, value)
+        except AttributeError:
+            print(f"** invalid attribute '{key}' **")
+            return
+
+    # Print the ID of the new instance
+    print(new_instance.id)
+
+"""
     def do_create(self, args):
         """ Create an object of any class"""
         if not args:
@@ -129,25 +178,24 @@ class HBNBCommand(cmd.Cmd):
         print(v)
 #        setattr(new_instance, k, v)
 #        storage.save()
-"""def remove_quotes(my_string):
+def remove_quotes(my_string):
     if my_string[0] == '"' and my_string[-1] == '"':
         my_string = my_string[1:-1]
-            return my_string"""
+            return my_string
 
-"""my_string = '"Hello, world"'
+my_string = '"Hello, world"'
 new_string = remove_quotes(my_string)
 print(new_string)
-"""
 
-"""thestr = 'State name="Texas"'
+thestr = 'State name="Texas"'
 my_list = thestr.split(" ")
 
 if my_list[1].split('=')[1][0] == '"':
     new_list = my_list[1].split('=')[1][1:-1]
-    print(new_list)"""
+    print(new_list)
 
         print(new_instance.id)
-
+"""
     def help_create(self):
         """ Help information for the create method """
         print("Creates a class of any type")
