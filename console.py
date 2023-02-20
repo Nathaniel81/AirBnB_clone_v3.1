@@ -115,50 +115,50 @@ class HBNBCommand(cmd.Cmd):
     def do_create(self, args):
     """Create an object of any class"""
     # Check if the class name is provided
-    if not args:
-        print("** class name missing **")
-        return
-
-    # Split the arguments and extract the class name
-    argss = args.split()
-    class_name = argss[0]
-
-    # Check if the class exists
-    if class_name not in HBNBCommand.classes:
-        print("** class doesn't exist **")
-        return
-
-    # Create a new instance of the class
-    try:
-        new_instance = HBNBCommand.classes[class_name]()
-    except TypeError:
-        print("** failed to create instance **")
-        return
-
-    # Set the attributes of the new instance
-    for pair in argss[1:]:
-        key, value = pair.split("=", maxsplit=1)
-        value = value.strip()
-        if len(value) >= 2 and value[0] == value[-1] == '"':
-            value = value[1:-1].replace('_', ' ')
-        else:
-            try:
-                value = int(value)
-            except ValueError:
-                try:
-                    value = float(value)
-                except ValueError:
-                    print(f"** invalid value '{value}' **")
-                    return
-
-        try:
-            setattr(new_instance, key, value)
-        except AttributeError:
-            print(f"** invalid attribute '{key}' **")
+        if not args:
+            print("** class name missing **")
             return
 
+    # Split the arguments and extract the class name
+        argss = args.split()
+        class_name = argss[0]
+
+    # Check if the class exists
+        if class_name not in HBNBCommand.classes:
+            print("** class doesn't exist **")
+            return
+
+    # Create a new instance of the class
+        try:
+            new_instance = HBNBCommand.classes[class_name]()
+        except TypeError:
+            print("** failed to create instance **")
+            return
+
+    # Set the attributes of the new instance
+        for pair in argss[1:]:
+            key, value = pair.split("=", maxsplit=1)
+            value = value.strip()
+            if len(value) >= 2 and value[0] == value[-1] == '"':
+                value = value[1:-1].replace('_', ' ')
+            else:
+                try:
+                    value = int(value)
+                except ValueError:
+                    try:
+                        value = float(value)
+                    except ValueError:
+                        print(f"** invalid value '{value}' **")
+                        return
+
+            try:
+                setattr(new_instance, key, value)
+            except AttributeError:
+                print(f"** invalid attribute '{key}' **")
+                return
+
     # Print the ID of the new instance
-    print(new_instance.id)
+        print(new_instance.id)
 
 """
     def do_create(self, args):
