@@ -37,7 +37,6 @@ class HBNBCommand(cmd.Cmd):
 
     def precmd(self, line):
         """Reformat command line for advanced command syntax.
-
         Usage: <class name>.<command>([<id> [<*args> or <**kwargs>]])
         (Brackets denote optional fields in usage example.)
         """
@@ -113,88 +112,67 @@ class HBNBCommand(cmd.Cmd):
         """ Overrides the emptyline method of CMD """
         pass
     def do_create(self, args):
-    """Create an object of any class"""
-    # Check if the class name is provided
+        """ Create an object of any class"""
         if not args:
             print("** class name missing **")
             return
 
-    # Split the arguments and extract the class name
-        argss = args.split()
-        class_name = argss[0]
-
-    # Check if the class exists
-        if class_name not in HBNBCommand.classes:
+        args = args.split(" ")
+        if args[0] not in HBNBCommand.classes:
             print("** class doesn't exist **")
             return
 
-    # Create a new instance of the class
-        try:
-            new_instance = HBNBCommand.classes[class_name]()
-        except TypeError:
-            print("** failed to create instance **")
-            return
+        # Create a new instance of the class
+        new_instance = HBNBCommand.classes[args[0]]()
 
-    # Set the attributes of the new instance
-        for pair in argss[1:]:
-            key, value = pair.split("=", maxsplit=1)
-            value = value.strip()
-            if len(value) >= 2 and value[0] == value[-1] == '"':
-                value = value[1:-1].replace('_', ' ')
+        # Loop over the remaining arguments
+        for arg in args[1:]:
+            # Split each argument into a key-value pair
+            key, value = arg.split("=", maxsplit=1)
+
+            # Check if the value is a string
+            if value.startswith('"') and value.endswith('"'):
+            # If it is, remove the quotes and replace any underscores with spaces
+                value = value[1:-1].replace("_", " ")
+
+            # Otherwise, check if the value is a float
+            elif '.' in value:
+                try:
+                    value = float(value)
+                except (SyntaxError, NameError):
+                    pass
+
+            # Otherwise, check if the value is an integer
             else:
                 try:
                     value = int(value)
-                except ValueError:
-                    try:
-                        value = float(value)
-                    except ValueError:
-                        print(f"** invalid value '{value}' **")
-                        return
+                except (SyntaxError, NameError):
+                    pass
 
-            try:
+            # Set the attribute of the new instance to the key-value pair
+            if value != "":
                 setattr(new_instance, key, value)
-            except AttributeError:
-                print(f"** invalid attribute '{key}' **")
-                return
 
-    # Print the ID of the new instance
+        # Save the new instance
+        new_instance.save()
+
+        # Print the ID of the new instance
         print(new_instance.id)
 
-"""
+
     def do_create(self, args):
         """ Create an object of any class"""
         if not args:
             print("** class name missing **")
             return
-        argss = args.split(" ")
-        if argss[0] not in HBNBCommand.classes:
+        elif args not in HBNBCommand.classes:
             print("** class doesn't exist **")
             return
-        new_instance = HBNBCommand.classes[argss[0]]()
-        k, v = tuple(argss[1].split('='))
-        if v.startswith('"') and v.endswith('"'):
-            v = v[1:-1]
-        print(v)
-#        setattr(new_instance, k, v)
-#        storage.save()
-def remove_quotes(my_string):
-    if my_string[0] == '"' and my_string[-1] == '"':
-        my_string = my_string[1:-1]
-            return my_string
-
-my_string = '"Hello, world"'
-new_string = remove_quotes(my_string)
-print(new_string)
-
-thestr = 'State name="Texas"'
-my_list = thestr.split(" ")
-
-if my_list[1].split('=')[1][0] == '"':
-    new_list = my_list[1].split('=')[1][1:-1]
-    print(new_list)
-
+        new_instance = HBNBCommand.classes[args]()
+        storage.save()
         print(new_instance.id)
-"""
+        storage.save()
+
     def help_create(self):
         """ Help information for the create method """
         print("Creates a class of any type")
