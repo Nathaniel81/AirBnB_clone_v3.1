@@ -2,29 +2,32 @@
 
 from sqlalchemy import create_engine, Table, MetaData
 from sqlalchemy.orm import sessionmaker
+from flask import Flask, render_template
 
 engine = create_engine("mysql+mysqldb://root:''@localhost/hbnb_dev_db2")
-
-# Create a metadata object
 metadata = MetaData()
-
-# Reflect the structure of the database
 metadata.reflect(bind=engine)
 
-# Get the table object for mytable
 mytable = Table('states', metadata, autoload=True, autoload_with=engine)
 
-# Create a database session
 Session = sessionmaker(bind=engine)
 session = Session()
 
-# Query the mytable table
 result = session.query(mytable).all()
 
-# Print the results
-for row in result:
-    print(row.name)
+#for row in result:
+ #   print(row.name)
 
-# Close the session
-session.close()
+#session.close()
+
+app = Flask(__name__)
+
+@app.route("/states_list", strict_slashes=False)
+def list_states():
+    result = session.query(mytable).all()
+    return renbder_template('7s.html', r=result)
+
+@app.teardown_appcontext
+def tear_down_db(execute):
+    storage.close()
 
