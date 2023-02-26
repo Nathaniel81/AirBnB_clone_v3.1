@@ -1,8 +1,9 @@
 #!/usr/bin/python3
 
 from sqlalchemy import create_engine, Table, MetaData
+from sqlalchemy.orm import sessionmaker
 
-engine = create_engine("mysql+mysqldb://root:''@localhost/hbnb_dev_db")
+engine = create_engine("mysql+mysqldb://root:''@localhost/hbnb_dev_db2")
 
 # Create a metadata object
 metadata = MetaData()
@@ -11,7 +12,7 @@ metadata = MetaData()
 metadata.reflect(bind=engine)
 
 # Get the table object for mytable
-mytable = Table('cities', metadata, autoload=True, autoload_with=engine)
+mytable = Table('states', metadata, autoload=True, autoload_with=engine)
 
 # Create a database session
 Session = sessionmaker(bind=engine)
@@ -22,7 +23,7 @@ result = session.query(mytable).all()
 
 # Print the results
 for row in result:
-    print(row)
+    print(row.name)
 
 # Close the session
 session.close()
